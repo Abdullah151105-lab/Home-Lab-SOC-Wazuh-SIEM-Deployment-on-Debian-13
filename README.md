@@ -1,8 +1,6 @@
-A self-hosted Security Information and Event Management (SIEM) lab built to learn Blue Team fundamentals — log analysis, threat detection, file integrity monitoring, and MITRE ATT&CK mapping — using [Wazuh](https://wazuh.com/) on a Debian 13 virtual machine.
-
 ## Overview
 
-This project documents the process of standing up an all-in-one Wazuh deployment (Indexer, Manager, Dashboard) from scratch, including the real-world troubleshooting that came with running it on an unsupported, ARM64-based Linux distribution. The goal was to gain hands-on experience with a production-grade SIEM rather than just reading about one.
+This project documents the process of standing up an all-in-one Wazuh deployment (Indexer, Manager, Dashboard) from scratch, including the real-world troubleshooting that came with running it on an unsupported, ARM64-based Linux distribution. The goal was to gain hands-on experience with a SIEM.
 
 ## Environment
 
@@ -43,11 +41,11 @@ This project documents the process of standing up an all-in-one Wazuh deployment
    ```bash
    sudo curl -k -u 'admin:<password>' https://localhost:9200
    ```
-5. Logged into the Wazuh Dashboard over HTTPS and explored the built-in modules: Threat Hunting / Security Events, Vulnerability Detection, File Integrity Monitoring, and MITRE ATT&CK mapping.
+5. Logged into the Wazuh Dashboard over HTTPS and explored the built-in modules: Threat Hunting / Security Events, Vulnerability Detection and MITRE ATT&CK mapping.
 
 ## Challenges & Fixes
 
-Running Wazuh on an unsupported ARM64 host surfaced several real issues — documenting them was as valuable as the install itself.
+Running Wazuh on an unsupported ARM64 host surfaced several real issues:
 
 **1. Install script rejected the system as "not 64-bit"**
 The pinned `4.9` install script had an outdated architecture check that misidentified `aarch64` (ARM64) systems. Fixed by using the current script version (`4.14`), which supports ARM64 properly.
@@ -68,22 +66,11 @@ Not a bug: the dashboard's time-range filter (top right) defaults to a short win
 
 - **Threat Hunting / Security Events** — real-time alert feed with severity levels and rule IDs, generated even without external attacks (the Manager monitors its own host by default).
 - **Vulnerability Detection** — automatic CVE scanning against installed packages.
-- **File Integrity Monitoring (FIM)** — detects changes to monitored system paths on an interval-based scan.
 - **MITRE ATT&CK mapping** — alerts are automatically correlated to known adversary tactics and techniques where applicable.
 
-## Limitations Investigated
-
-- Wazuh has no official mobile agent (Android/iOS) — endpoint monitoring is limited to traditional OS platforms. True visibility into mobile devices on a home network would require network-level tooling (e.g. Suricata/Zeek on a router/switch with port mirroring) rather than a host-based agent.
-
-## Next Steps
-
-- [ ] Deploy a second VM (Kali or plain Debian) and install a Wazuh agent to generate real cross-host telemetry.
-- [ ] Simulate basic attacks (SSH brute-force, Nmap port scans) and verify detection + MITRE ATT&CK mapping.
-- [ ] Add Suricata for network-level visibility, correlated into Wazuh.
-- [ ] Explore Wazuh on a Raspberry Pi as a low-power, always-on home-network monitoring node.
 
 ## Key Takeaways
 
-- Hands-on experience deploying and troubleshooting a real SIEM stack, not just following a tutorial end-to-end.
+- Hands-on experience deploying and troubleshooting a real SIEM stack.
 - Practical debugging across the VM/host boundary (VirtualBox disk provisioning, partition layout, systemd services).
 - Understanding of Wazuh's architecture (Indexer/Manager/Dashboard separation) and its scope (host-based, not network-based) — including where it needs to be paired with other tools.
